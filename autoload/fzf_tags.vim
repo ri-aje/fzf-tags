@@ -74,16 +74,39 @@ function! s:tag_to_string(index, tag_dict)
   if has_key(a:tag_dict, 'filename')
     call add(components, s:magenta(a:tag_dict['filename']))
   endif
+
+  " for some reason, only one of namespace and class is present.
+  " probably because namespace and class decl aren't on the same line?
+  if has_key(a:tag_dict, 'namespace')
+    call add(components, s:green(trim(a:tag_dict['namespace'])))
+  endif
   if has_key(a:tag_dict, 'class')
     call add(components, s:green(a:tag_dict['class']))
   endif
+
+  " cmd is basically the source code. remove useless regex control chars.
   if has_key(a:tag_dict, 'cmd')
-    call add(components, s:red(a:tag_dict['cmd']))
+    let cmd = trim(a:tag_dict['cmd'])
+    if cmd =~ "^\/\^"
+      let cmd = cmd[2:]
+    endif
+    if cmd =~ "\$\/$"
+      let cmd = cmd[:-3]
+    endif
+    call add(components, s:red(trim(cmd)))
+  endif
+
+  " signature gives the function params, useful for overload resolution.
+  if has_key(a:tag_dict, 'signature')
+    call add(components, s:red(trim(a:tag_dict['signature'])))
   endif
   return components
 endfunction
 
 function! s:align_lists(lists)
+  if !get(g:, 'fzf_tags_align', 0)
+    return a:lists
+  endif
   let maxes = {}
   for list in a:lists
     let i = 0
