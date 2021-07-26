@@ -87,6 +87,9 @@ function! s:tag_to_string(index, tag_dict)
   if has_key(a:tag_dict, 'line')
     call add(components, s:red(a:tag_dict['line']))
   endif
+  if has_key(a:tag_dict, 'kind')
+    call add(components, s:green(a:tag_dict['kind']))
+  endif
 
   " cmd is basically the source code. remove useless regex control chars.
   if has_key(a:tag_dict, 'cmd')
