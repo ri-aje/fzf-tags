@@ -84,6 +84,10 @@ function! s:tag_to_string(index, tag_dict)
     call add(components, s:green(a:tag_dict['class']))
   endif
 
+  if has_key(a:tag_dict, 'line')
+    call add(components, s:red(a:tag_dict['line']))
+  endif
+
   " cmd is basically the source code. remove useless regex control chars.
   if has_key(a:tag_dict, 'cmd')
     let cmd = trim(a:tag_dict['cmd'])
