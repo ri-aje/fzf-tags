@@ -142,7 +142,7 @@ function! s:sink(identifier, selection)
   execute l:count . 'tag' a:identifier
 endfunction
 
-# colors found on https://gist.github.com/daytonn/8677243
+" colors found on https://gist.github.com/daytonn/8677243
 function! s:black(s)
   return "\033[30m" . a:s . "\033[m"
 endfunction
