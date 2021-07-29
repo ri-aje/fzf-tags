@@ -99,7 +99,7 @@ function! s:tag_to_string(index, tag_dict)
   " cmd is basically the source code. remove useless regex control chars.
   if has_key(a:tag_dict, 'cmd')
     let cmd = trim(a:tag_dict['cmd'])
-    if !get(g:, 'fzf_tags_cleanup', 0)
+    if get(g:, 'fzf_tags_cleanup', 0)
       " remove head ^/ symbol.
       if cmd =~ "^\/\^"
         let cmd = cmd[2:]
