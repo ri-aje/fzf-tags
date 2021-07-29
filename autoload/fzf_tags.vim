@@ -99,13 +99,20 @@ function! s:tag_to_string(index, tag_dict)
   " cmd is basically the source code. remove useless regex control chars.
   if has_key(a:tag_dict, 'cmd')
     let cmd = trim(a:tag_dict['cmd'])
+    " remove head ^/ symbol.
     if cmd =~ "^\/\^"
       let cmd = cmd[2:]
     endif
+    " remove tail $/ symbol.
     if cmd =~ "\$\/$"
       let cmd = cmd[:-3]
     endif
-    call add(components, s:red(trim(cmd)))
+    let cmd = trim(cmd)
+    " remove tail open paren/brace/bracket symbol.
+    if cmd =~ "[([{]$"
+      let cmd = trim(cmd[:-1])
+    endif
+    call add(components, s:red(cmd))
   endif
 
   " signature gives the function params, useful for overload resolution.
