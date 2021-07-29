@@ -72,23 +72,23 @@ endfunction
 function! s:tag_to_string(index, tag_dict)
   let components = [a:index + 1]
   if has_key(a:tag_dict, 'filename')
-    call add(components, s:magenta(a:tag_dict['filename']))
+    call add(components, s:black(a:tag_dict['filename']))
   endif
 
   " for some reason, only one of namespace and class is present.
   " probably because namespace and class decl aren't on the same line?
   if has_key(a:tag_dict, 'namespace')
-    call add(components, s:green(trim(a:tag_dict['namespace'])))
+    call add(components, s:blue(trim(a:tag_dict['namespace'])))
   endif
   if has_key(a:tag_dict, 'class')
-    call add(components, s:green(a:tag_dict['class']))
+    call add(components, s:blue(a:tag_dict['class']))
   endif
 
   if has_key(a:tag_dict, 'line')
     call add(components, s:red(a:tag_dict['line']))
   endif
   if has_key(a:tag_dict, 'kind')
-    call add(components, s:green(a:tag_dict['kind']))
+    call add(components, s:purple(repeat(a:tag_dict['kind'],2)))
   endif
 
   " cmd is basically the source code. remove useless regex control chars.
@@ -105,7 +105,7 @@ function! s:tag_to_string(index, tag_dict)
 
   " signature gives the function params, useful for overload resolution.
   if has_key(a:tag_dict, 'signature')
-    call add(components, s:red(trim(a:tag_dict['signature'])))
+    call add(components, s:purple(trim(a:tag_dict['signature'])))
   endif
   return components
 endfunction
@@ -142,12 +142,19 @@ function! s:sink(identifier, selection)
   execute l:count . 'tag' a:identifier
 endfunction
 
-function! s:green(s)
-  return "\033[32m" . a:s . "\033[m"
-endfunction
-function! s:magenta(s)
-  return "\033[35m" . a:s . "\033[m"
+# colors found on https://gist.github.com/daytonn/8677243
+function! s:black(s)
+  return "\033[30m" . a:s . "\033[m"
 endfunction
 function! s:red(s)
   return "\033[31m" . a:s . "\033[m"
+endfunction
+function! s:green(s)
+  return "\033[32m" . a:s . "\033[m"
+endfunction
+function! s:blue(s)
+  return "\033[34m" . a:s . "\033[m"
+endfunction
+function! s:purple(s)
+  return "\033[35m" . a:s . "\033[m"
 endfunction
