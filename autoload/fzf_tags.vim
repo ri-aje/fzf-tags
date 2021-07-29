@@ -88,7 +88,11 @@ function! s:tag_to_string(index, tag_dict)
     call add(components, s:red(a:tag_dict['line']))
   endif
   if has_key(a:tag_dict, 'kind')
-    call add(components, s:purple(repeat(a:tag_dict['kind'],2)))
+    let kind = a:tag_dict['kind']
+    if kind == 's'
+      let kind = 'c'
+    endif
+    call add(components, s:purple(repeat(kind,2)))
   endif
 
   " cmd is basically the source code. remove useless regex control chars.
