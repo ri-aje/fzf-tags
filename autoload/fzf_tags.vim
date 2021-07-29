@@ -110,9 +110,13 @@ function! s:tag_to_string(index, tag_dict)
     let cmd = trim(cmd)
     " remove tail open paren/bracket/brace symbols.
     if cmd =~ '[([{][^([{]*$'
-      let cmd = trim(substitute(cmd,'[([{][^([{]*$','',''))
+      let cmd = substitute(cmd,'[([{][^([{]*$','','')
     endif
-    call add(components, s:red(cmd))
+    " unescape escaped / symbols.
+    if cmd =~ '\\\/'
+      let cmd = substitute(cmd,'\\\/','\/','g')
+    endif
+    call add(components, s:red(trim(cmd)))
   endif
 
   " signature gives the function params, useful for overload resolution.
