@@ -109,8 +109,8 @@ function! s:tag_to_string(index, tag_dict)
     endif
     let cmd = trim(cmd)
     " remove tail open paren/bracket/brace symbols.
-    if cmd[-1:] =~ '[([{]'
-      let cmd = trim(cmd[:-2])
+    if cmd =~ '[([{][^([{]*$'
+      let cmd = trim(substitute(cmd,'[([{][^([{]*$',''))
     endif
     call add(components, s:red(cmd))
   endif
