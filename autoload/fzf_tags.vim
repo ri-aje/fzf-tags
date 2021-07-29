@@ -11,6 +11,9 @@ let s:actions = {
   \ 'ctrl-x': 'split',
   \ 'ctrl-v': 'vsplit' }
 
+" caching taglist results.
+let s:fzf_tags_cache = {}
+
 function! fzf_tags#SelectCommand(identifier)
   let identifier = empty(a:identifier) ? s:tagstack_head() : a:identifier
   if empty(identifier)
@@ -62,11 +65,18 @@ function! s:strip_leading_bangs(identifier)
 endfunction
 
 function! s:source_lines(identifier)
-  let relevant_fields = map(
-  \   taglist('^' . a:identifier . '$', expand('%:p')),
-  \   function('s:tag_to_string')
-  \ )
-  return map(s:align_lists(relevant_fields), 'join(v:val, " ")')
+  if get(g:, 'fzf_tags_enable_cache', 0)
+    if !has_key(s:fzf_tags_cache, a:identifier)
+      let s:fzf_tags_cache[a:identifier] = map(taglist('^' . a:identifier . '$', expand('%:p')),function('s:tag_to_string'))
+    endif
+    return map(s:align_lists(deepcopy(s:fzf_tags_cache[a:identifier])), 'join(v:val, " ")')
+  else
+    let relevant_fields = map(
+          \   taglist('^' . a:identifier . '$', expand('%:p')),
+          \   function('s:tag_to_string')
+          \ )
+    return map(s:align_lists(relevant_fields), 'join(v:val, " ")')
+  endif
 endfunction
 
 function! s:tag_to_string(index, tag_dict)
