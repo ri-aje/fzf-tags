@@ -89,7 +89,8 @@ function! s:tag_to_string(index, tag_dict)
   endif
   if has_key(a:tag_dict, 'kind')
     let kind = a:tag_dict['kind']
-    if kind == 's'
+    " struct is class, so is enum, sort of.
+    if kind == 's' || kind == 'g'
       let kind = 'c'
     endif
     call add(components, s:purple(repeat(kind,2)))
