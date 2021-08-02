@@ -103,7 +103,7 @@ function! s:tag_to_string(index, tag_dict)
     if kind == 's' || kind == 'g'
       let kind = 'c'
     endif
-    call add(components, s:purple(repeat(kind,2)))
+    call add(components, s:purple(repeat(kind,3)))
   endif
 
   " cmd is basically the source code. remove useless regex control chars.
