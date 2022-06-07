@@ -84,7 +84,7 @@ function! s:tag_to_string(index, tag_dict)
   if has_key(a:tag_dict, 'filename')
     " shorten home dir prefix on unix platforms for filenames.
     let filename = a:tag_dict['filename']
-    for pattern in ["/home/$USER", "/Users/$USER", "/data/users/$USER"]
+    for pattern in ["/home/".$USER, "/Users/".$USER, "/data/users/".$USER]
       if filename =~ pattern
         let filename = substitute(filename,pattern,'~','')
         break
