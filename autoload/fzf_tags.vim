@@ -82,7 +82,15 @@ endfunction
 function! s:tag_to_string(index, tag_dict)
   let components = [a:index + 1]
   if has_key(a:tag_dict, 'filename')
-    call add(components, s:black(a:tag_dict['filename']))
+    " shorten home dir prefix on unix platforms for filenames.
+    let filename = a:tag_dict['filename']
+    for pattern in ["/home/$USER", "/Users/$USER", "/data/users/$USER"]
+      if filename =~ pattern
+        let filename = substitute(filename,pattern,'~','')
+        break
+      endif
+    endfor
+    call add(components, s:black(filename))
   endif
 
   " for some reason, only one of namespace and class is present.
