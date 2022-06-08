@@ -79,7 +79,24 @@ function! s:source_lines(identifier)
         return 0
       endfunction
 
+      function! s:category(filepath)
+        if a:filepath =~? "generated"
+          return 1
+        endif
+        if a:filepath =~? "tests"
+          return 2
+        endif
+        return 0
+      endfunction
+
       function! s:compare_lists(x, y)
+        " classify filepath into categories and compare category first.
+        let xcategory = s:category(a:x[1])
+        let ycategory = s:category(a:y[1])
+        if xcategory != ycategory
+          return xcategory - ycategory
+        endif
+
         let xsize = len(a:x)
         let ysize = len(a:y)
 
@@ -116,8 +133,7 @@ function! s:source_lines(identifier)
         return a:list
       endfunction
 
-      " reset the tag list indices to align with the sorted ordering.
-      " note:
+      " reset the tag list indices to align with the sorted ordering. note:
       " 1. lambda won't work here since vim lambda only supports expressions.
       "    it has thee same shortcoming as python lambda.
       " 2. wasn't able to get partial function work here. even if it does, looks
