@@ -99,12 +99,27 @@ function! s:source_lines(identifier)
       " sort the tag lists. the default order seems just random and confusing.
       call sort(s:fzf_tags_cache[a:identifier], function('s:compare_lists'))
 
-      function! s:reset_index(index, list)
-        let a:list[0] = printf("%03d", a:index+1)
+      let tagsize = len(s:fzf_tags_cache[a:identifier])
+      let ndigit = 1
+      if tagsize < 100
+        let ndigit = 2
+      elseif tagsize < 1000
+        let ndigit = 3
+      elseif tagsize < 10000
+        let ndigit = 4
+      endif
+
+      function! s:reset_index(index, list) closure " closure to capture ndigit.
+        let a:list[0] = printf("%0" . ndigit . "d", a:index+1)
         return a:list
       endfunction
 
       " reset the tag list indices to align with the sorted ordering.
+      " note:
+      " 1. lambda won't work here since vim lambda only supports expressions.
+      "    it has thee same shortcoming as python lambda.
+      " 2. wasn't able to get partial function work here. even if it does, looks
+      "    like pretty compliated setup just to pass in ndigit.
       call map(s:fzf_tags_cache[a:identifier], function('s:reset_index'))
     endif
     return map(s:align_lists(deepcopy(s:fzf_tags_cache[a:identifier])), 'join(v:val, " ")')
