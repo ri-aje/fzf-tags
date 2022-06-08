@@ -100,8 +100,10 @@ function! s:source_lines(identifier)
       call sort(s:fzf_tags_cache[a:identifier], function('s:compare_lists'))
 
       let tagsize = len(s:fzf_tags_cache[a:identifier])
-      let ndigit = 1
-      if tagsize < 100
+      let ndigit = 0
+      if tagsize < 10
+        let ndigit = 1
+      elseif tagsize < 100
         let ndigit = 2
       elseif tagsize < 1000
         let ndigit = 3
