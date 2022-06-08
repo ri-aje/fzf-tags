@@ -68,6 +68,44 @@ function! s:source_lines(identifier)
   if get(g:, 'fzf_tags_enable_cache', 0)
     if !has_key(s:fzf_tags_cache, a:identifier)
       let s:fzf_tags_cache[a:identifier] = map(taglist('^' . a:identifier . '$', expand('%:p')),function('s:tag_to_string'))
+
+      function! s:compare_items(x, y)
+        if a:x < a:y
+          return -1
+        endif
+        if a:x > a:y
+          return 1
+        endif
+        return 0
+      endfunction
+
+      function! s:compare_lists(x, y)
+        let xsize = len(a:x)
+        let ysize = len(a:y)
+
+        let index = 1 " ignore first item, which is the somewhat randm index.
+        while index < min([xsize,ysize])
+          let c = s:compare_items(a:x[index], a:y[index])
+          if c != 0
+            return c
+          endif
+          let index += 1
+        endwhile
+
+        " all [1:] items are identical, shorter list is smaller.
+        return xsize - ysize
+      endfunction
+
+      " sort the tag lists. the default order seems just random and confusing.
+      call sort(s:fzf_tags_cache[a:identifier], function('s:compare_lists'))
+
+      function! s:reset_index(index, list)
+        let a:list[0] = printf("%03d", a:index+1)
+        return a:list
+      endfunction
+
+      " reset the tag list indices to align with the sorted ordering.
+      call map(s:fzf_tags_cache[a:identifier], function('s:reset_index'))
     endif
     return map(s:align_lists(deepcopy(s:fzf_tags_cache[a:identifier])), 'join(v:val, " ")')
   else
