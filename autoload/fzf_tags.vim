@@ -83,7 +83,7 @@ function! s:source_lines(identifier)
         if a:filepath =~? "generated"
           return 1
         endif
-        if a:filepath =~? "tests"
+        if a:filepath =~? "test"
           return 2
         endif
         return 0
