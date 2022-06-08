@@ -102,9 +102,6 @@ function! s:tag_to_string(index, tag_dict)
     call add(components, s:blue(a:tag_dict['class']))
   endif
 
-  if has_key(a:tag_dict, 'line')
-    call add(components, s:red(a:tag_dict['line']))
-  endif
   if has_key(a:tag_dict, 'kind')
     let kind = a:tag_dict['kind']
     " struct is class, so is enum, sort of.
@@ -112,6 +109,9 @@ function! s:tag_to_string(index, tag_dict)
       let kind = 'c'
     endif
     call add(components, s:purple(repeat(kind,3)))
+  endif
+  if has_key(a:tag_dict, 'line')
+    call add(components, s:red(a:tag_dict['line']))
   endif
 
   " cmd is basically the source code. remove useless regex control chars.
