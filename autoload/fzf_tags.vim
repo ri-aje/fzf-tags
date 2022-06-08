@@ -44,7 +44,7 @@ function! fzf_tags#Find(identifier)
     let run_spec = {
           \ 'source': source_lines,
           \ 'sink*': function('s:sink', [identifier]),
-          \ 'options': '--expect=' . expect_keys . ' --ansi --no-sort --tiebreak index --prompt "' . s:fzf_tags_prompt . '\"' . identifier . '\" > "',
+          \ 'options': '--expect=' . expect_keys . ' --layout=reverse --ansi --no-sort --tiebreak index --prompt "' . s:fzf_tags_prompt . '\"' . identifier . '\" > "',
           \ }
     let final_run_spec = extend(run_spec, s:fzf_layout)
     call fzf#run(final_run_spec)
