@@ -56,6 +56,10 @@ function! s:tagstack_head()
   return stack.length != 0 ? stack.items[-1].tagname : ""
 endfunction
 
+function! s:tagsearch_string(identifier)
+  return '^' . a:identifier . '$'
+endfunction
+
 function! s:strip_leading_bangs(identifier)
   if (a:identifier[0] !=# '!')
     return a:identifier
@@ -142,10 +146,11 @@ function! s:source_lines(identifier)
     endif
     return map(s:align_lists(deepcopy(s:fzf_tags_cache[a:identifier])), 'join(v:val, " ")')
   else
+    let tagstring = s:tagsearch_string(a:identifier)
     let relevant_fields = map(
-          \   taglist('^' . a:identifier . '$', expand('%:p')),
-          \   function('s:tag_to_string')
-          \ )
+    \   taglist(tagstring, expand('%:p')),
+    \   function('s:tag_to_string')
+    \ )
     return map(s:align_lists(relevant_fields), 'join(v:val, " ")')
   endif
 endfunction
@@ -247,7 +252,7 @@ function! s:sink(identifier, selection)
 
   " Go to tag!
   let l:count = split(selected_text)[0]
-  execute l:count . 'tag' a:identifier
+  execute l:count . 'tag /' . s:tagsearch_string(a:identifier)
 endfunction
 
 " colors found on https://gist.github.com/vratiu/9780109
